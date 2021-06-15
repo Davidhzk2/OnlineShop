@@ -27,6 +27,4 @@ router.get("/listRole", async (req, res) =>{
     return res.status(200).send({role});
 });
 
-
-
 module.exports = router;

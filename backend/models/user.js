@@ -3,9 +3,9 @@ const moment = require("moment");
 const jwt = require("jsonwebtoken");
 
 const userSchema = new  mongoose.Schema({
-    fullName: String,
+    fullname: String,
     email: String,
-    passwaord:String,
+    password:String,
     phone: String,
     status: Boolean,
     roleId: {type: mongoose.Schema.ObjectId, ref:"role"},
@@ -13,7 +13,7 @@ const userSchema = new  mongoose.Schema({
 });
 
 userSchema.methods.generateJWT = function (){
-    return jqt.sign({
+    return jwt.sign({
         _id: this._id,
         name: this.name,
         roleId: this.roleId,
