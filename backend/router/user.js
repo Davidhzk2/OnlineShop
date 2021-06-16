@@ -46,7 +46,10 @@ router.put("/updateUser", async (req, res)=>{
         password: hash,
         phone: req.body.phone,
         status: true
-    })
+    });
+
+    if(!user) return res.status.send("Process failed: Error editing user.");
+    return res.status(200).send({user});
 });
 
 module.exports = router;
