@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const Role = require("../models/role");
 
+const Auth = require("../middleware/auth");
+
 router.post("/registerUser/", async (req, res)=>{
     if(!req.body.name || !req.body.email || !req.body.password ) return res.status(400).send("Incomplete data.");
 
@@ -34,7 +36,7 @@ router.post("/registerUser/", async (req, res)=>{
     }
 });
 
-router.put("/updateUser", async (req, res)=>{
+router.put("/updateUser",Auth, async (req, res)=>{
     if(!req.body._id || !req.body.name || !req.body.email || !req.body.password || !req.body.roleId) return res.status(400).send("Incomplete data.");
 
     const hash = await  bcrypt.hash(req.body.password, 10);
@@ -49,6 +51,24 @@ router.put("/updateUser", async (req, res)=>{
     });
 
     if(!user) return res.status.send("Process failed: Error editing user.");
+    return res.status(200).send({user});
+});
+
+router.put("/deactivateUser",Auth, async (req, res)=>{
+    if(!req.body._id || !req.body.name || !req.body.email || !req.body.password || !req.body.roleId) return res.status(400).send("Incomplete data.");
+
+    const hash = await  bcrypt.hash(req.body.password, 10);
+
+    const user  = await User.findByIdAndUpdate(req.body._id,{
+        roleId: req.body.roleId,
+        fullname: req.body.name,
+        email: req.body.email,
+        password: hash,
+        phone: req.body.phone,
+        status: false
+    });
+
+    if(!user) return res.status.send("Process failed: Errordeliting user.");
     return res.status(200).send({user});
 });
 
